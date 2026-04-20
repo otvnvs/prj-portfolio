@@ -7,13 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet"/>
   <style>
-
     :root {
       --bg: #0d1117;
       --ink: #cdd9e5;
       --muted: #4d6478;
       --accent: #58a6ff;
       --border: #243447;
+      --card-bg: rgba(255, 255, 255, 0.02);
     }
  
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -39,7 +39,7 @@
     }
  
     .wrap {
-      max-width: 760px;
+      max-width: 1000px; /* Slightly wider for grid */
       margin: 0 auto;
       position: relative;
       z-index: 1;
@@ -77,19 +77,68 @@
     }
     h1 em { font-style: normal; color: var(--accent); }
  
+    /* NEW: Controls Section */
+    .controls {
+      margin-bottom: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #search {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 0.8rem;
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.8rem;
+      outline: none;
+      width: 100%;
+      max-width: 300px;
+    }
+    #search:focus { border-color: var(--accent); }
+
+    #filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.3rem 0.7rem;
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     .subtitle {
       font-family: 'Syne Mono', monospace;
       font-size: 0.78rem;
       color: var(--muted);
-      margin-bottom: 3rem;
+      margin-bottom: 1rem;
       letter-spacing: 0.05em;
     }
  
-    #projects { list-style: none; }
+    /* UPDATED: Tiled Grid View */
+    #projects { 
+      list-style: none; 
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
  
     #projects li {
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       animation: slideUp 0.4s ease both;
+      display: flex;
     }
  
     @keyframes slideUp {
@@ -99,59 +148,67 @@
  
     #projects a {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1.5rem;
-      padding: 1.1rem 0;
+      flex-direction: column;
+      padding: 1.5rem;
       text-decoration: none;
       color: var(--ink);
-      transition: padding-left 0.2s;
+      width: 100%;
+      transition: border-color 0.2s;
     }
-    #projects a:hover { padding-left: 0.75rem; }
+    #projects li:hover { border-color: var(--accent); }
     #projects a:hover .proj-name { color: var(--accent); }
  
     .proj-name {
-      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-size: 1.2rem;
       font-weight: 700;
       letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
       transition: color 0.15s;
-      flex-shrink: 0;
     }
  
     .proj-desc {
       font-family: 'Syne Mono', monospace;
       font-size: 0.72rem;
       color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+ 
+    .proj-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .proj-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: 'Syne Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      opacity: 0.7;
     }
  
     .proj-meta {
       font-family: 'Syne Mono', monospace;
       font-size: 0.68rem;
       color: var(--muted);
-      white-space: nowrap;
-      flex-shrink: 0;
     }
- 
-    .arrow {
-      opacity: 0;
-      transition: opacity 0.15s;
-      color: var(--accent);
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-    #projects a:hover .arrow { opacity: 1; }
  
     .state {
       font-family: 'Syne Mono', monospace;
       font-size: 0.8rem;
       color: var(--muted);
       padding: 2rem 0;
+      grid-column: 1 / -1;
     }
-    .state.error { color: var(--accent); }
  
     footer {
       margin-top: 4rem;
@@ -173,70 +230,119 @@
   </header>
 
   <h1>Work &<br><em>Projects</em></h1>
-  <p class="subtitle" id="subtitle">// fetching repos…</p>
+  
+  <div class="controls">
+    <p class="subtitle" id="subtitle">// initializing...</p>
+    <input type="text" id="search" placeholder="search projects / topics...">
+    <div id="filters">
+      <button class="filter-btn active" data-filter="all">all</button>
+      <!-- Categories will be injected here -->
+    </div>
+  </div>
 
-  <ul id="projects"><li class="state">Loading…</li></ul>
+  <ul id="projects"><li class="state">Loading...</li></ul>
 
   <footer>
     <span id="count"></span>
-    <span>built with github pages api</span>
+    <span>built with github api</span>
   </footer>
 </div>
 
 <script>
-  //const USERNAME = 'otvnvs';
-  const USERNAME = window.location.hostname.split('.')[0];
+  const USERNAME = window.location.hostname.split('.')[0] || 'otvnvs';
   const PREFIX   = 'prj-';
+  let allRepos   = [];
+  let activeFilter = 'all';
 
   async function load() {
     const list     = document.getElementById('projects');
     const subtitle = document.getElementById('subtitle');
-    const count    = document.getElementById('count');
+    const filterContainer = document.getElementById('filters');
 
     try {
-      const res = await fetch(
-        `https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`
-      );
+      const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`);
       if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
-      const repos = await res.json();
+      
+      const data = await res.json();
+      allRepos = data.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
 
-      //const projects = repos.filter(r => r.name.startsWith(PREFIX));
-      const projects = repos.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
-
-
-      subtitle.textContent = `// ${projects.length} project${projects.length !== 1 ? 's' : ''} found`;
-      //count.textContent = `${projects.length} repos`;// with prefix "${PREFIX}"`;
-      list.innerHTML = '';
-
-      if (!projects.length) {
-        list.innerHTML = `<li class="state">No repos starting with "${PREFIX}" found.</li>`;
-        return;
-      }
-
-      projects.forEach((repo, i) => {
-        const slug    = repo.name;
-        const label   = slug.replace(PREFIX, '').replace(/-/g, ' ');
-        const pageUrl = `https://${USERNAME}.github.io/${slug}/`;
-        const stars   = repo.stargazers_count;
-        const desc    = repo.description || '';
-
-        const li = document.createElement('li');
-        li.style.animationDelay = `${i * 50}ms`;
-        li.innerHTML = `
-          <a href="${pageUrl}" target="_blank" rel="noopener">
-            <span class="proj-name">${label}</span>
-            <span class="proj-desc">${desc}</span>
-            <span class="proj-meta">${stars ? '&#9733; ' + stars : slug}</span>
-            <span class="arrow">&#8594;</span>
-          </a>
-        `;
-        list.appendChild(li);
+      // Extract unique topics for filter buttons
+      const topics = new Set();
+      allRepos.forEach(r => r.topics.forEach(t => topics.add(t)));
+      
+      topics.forEach(topic => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = topic;
+        btn.dataset.filter = topic;
+        btn.onclick = () => setFilter(topic);
+        filterContainer.appendChild(btn);
       });
+
+      render();
+      setupSearch();
 
     } catch (err) {
       list.innerHTML = `<li class="state error">${err.message}</li>`;
       subtitle.textContent = '// error fetching repos';
     }
+  }
+
+  function setFilter(topic) {
+    activeFilter = topic;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === topic);
+    });
+    render();
+  }
+
+  function setupSearch() {
+    document.getElementById('search').addEventListener('input', () => render());
+  }
+
+  function render() {
+    const list = document.getElementById('projects');
+    const subtitle = document.getElementById('subtitle');
+    const query = document.getElementById('search').value.toLowerCase();
+
+    const filtered = allRepos.filter(repo => {
+      const matchesSearch = repo.name.toLowerCase().includes(query) || 
+                            (repo.description || '').toLowerCase().includes(query) ||
+                            repo.topics.some(t => t.includes(query));
+      
+      const matchesFilter = activeFilter === 'all' || repo.topics.includes(activeFilter);
+      
+      return matchesSearch && matchesFilter;
+    });
+
+    subtitle.textContent = `// ${filtered.length} project${filtered.length !== 1 ? 's' : ''} found`;
+    list.innerHTML = '';
+
+    if (!filtered.length) {
+      list.innerHTML = `<li class="state">No matching projects found.</li>`;
+      return;
+    }
+
+    filtered.forEach((repo, i) => {
+      const label   = repo.name.replace(PREFIX, '').replace(/-/g, ' ');
+      const pageUrl = repo.homepage || `https://${USERNAME}.github.io/${repo.name}/`;
+      
+      const li = document.createElement('li');
+      li.style.animationDelay = `${i * 50}ms`;
+      li.innerHTML = `
+        <a href="${pageUrl}" target="_blank" rel="noopener">
+          <span class="proj-name">${label}</span>
+          <span class="proj-desc">${repo.description || 'No description provided.'}</span>
+          <div class="proj-footer">
+            <div class="proj-tags">
+              ${repo.topics.map(t => `<span class="tag">#${t}</span>`).join('')}
+            </div>
+            <span class="proj-meta">${repo.stargazers_count ? '★ ' + repo.stargazers_count : ''}</span>
+          </div>
+        </a>
+      `;
+      list.appendChild(li);
+    });
   }
 
   load();

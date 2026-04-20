@@ -254,47 +254,66 @@
   let allRepos   = [];
   let activeFilter = 'all';
 
-  async function load() {
-    const list     = document.getElementById('projects');
-    const subtitle = document.getElementById('subtitle');
-    const filterContainer = document.getElementById('filters');
 
-    try {
-      const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`);
-      if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
-      
-      const data = await res.json();
-      allRepos = data.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
+async function load() {
+  const list = document.getElementById('projects');
+  const subtitle = document.getElementById('subtitle');
+  const filterContainer = document.getElementById('filters');
 
-      // Extract unique topics for filter buttons
-      const topics = new Set();
-      allRepos.forEach(r => r.topics.forEach(t => topics.add(t)));
-      
-      topics.forEach(topic => {
-        const btn = document.createElement('button');
-        btn.className = 'filter-btn';
-        btn.textContent = topic;
-        btn.dataset.filter = topic;
-        btn.onclick = () => setFilter(topic);
-        filterContainer.appendChild(btn);
-      });
+  try {
+    const res = await fetch(`https://github.com{USERNAME}/repos?per_page=100&sort=updated`);
+    if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
+    
+    const data = await res.json();
+    allRepos = data.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
 
-      render();
-      setupSearch();
+    // 1. Clear the filter container first
+    filterContainer.innerHTML = '';
 
-    } catch (err) {
-      list.innerHTML = `<li class="state error">${err.message}</li>`;
-      subtitle.textContent = '// error fetching repos';
-    }
-  }
+    // 2. Create the "all" button dynamically so it's treated the same way
+    const allBtn = document.createElement('button');
+    allBtn.className = 'filter-btn active'; // Default active
+    allBtn.textContent = 'all';
+    allBtn.dataset.filter = 'all';
+    allBtn.onclick = () => setFilter('all');
+    filterContainer.appendChild(allBtn);
 
-  function setFilter(topic) {
-    activeFilter = topic;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === topic);
+    // 3. Extract and add specific topics
+    const topics = new Set();
+    allRepos.forEach(r => r.topics.forEach(t => topics.add(t)));
+    
+    topics.forEach(topic => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.textContent = topic;
+      btn.dataset.filter = topic;
+      btn.onclick = () => setFilter(topic);
+      filterContainer.appendChild(btn);
     });
+
     render();
+    setupSearch();
+
+  } catch (err) {
+    list.innerHTML = `<li class="state error">${err.message}</li>`;
+    subtitle.textContent = '// error fetching repos';
   }
+}
+
+function setFilter(topic) {
+  activeFilter = topic;
+  
+  // This updates the 'active' class on all buttons, including the dynamic "all" one
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    if (btn.dataset.filter === topic) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  render(); // Re-renders the grid based on the new activeFilter
+}
 
   function setupSearch() {
     document.getElementById('search').addEventListener('input', () => render());

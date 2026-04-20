@@ -2,7 +2,7 @@
 
 A dynamic, self-updating portfolio that automatically showcases my work by fetching data directly from the GitHub API.
 
-**[🚀 View My Live Portfolio](https://github.io)**
+**[View My Live Portfolio](https://otvnvs.github.io/prj-portfolio/)**
 
 ## How It Works
 Instead of manually updating this site every time I finish a project, this portfolio uses the **GitHub REST API** to:

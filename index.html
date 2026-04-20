@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>otvnvs | Portfolio</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --accent: #38bdf8;
+            --secondary: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--accent); }
+        p.subtitle { color: var(--secondary); font-size: 1.1rem; }
+
+        #project-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .project-card h3 {
+            margin: 0 0 0.75rem 0;
+            text-transform: capitalize;
+        }
+
+        .project-card p {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .links {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-secondary { border: 1px solid var(--secondary); color: var(--secondary); }
+        .btn:hover { opacity: 0.8; }
+
+        .loader {
+            color: var(--accent);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Projects</h1>
+        <p class="subtitle">Automated showcase of my "prj-" repositories</p>
+    </header>
+
+    <div id="project-list">
+        <p class="loader">Scanning GitHub for projects...</p>
+    </div>
+
+    <script>
+        async function loadProjects() {
+            const username = 'otvnvs';
+            const container = document.getElementById('project-list');
+            
+            try {
+                // Fetch repositories from GitHub API
+                const response = await fetch(`https://github.com{username}/repos?sort=updated`);
+                
+                if (!response.ok) throw new Error('Failed to fetch');
+                
+                const repos = await response.json();
+
+                // Filter for 'prj-' prefix and exclude the portfolio itself
+                const filteredRepos = repos.filter(repo => 
+                    repo.name.toLowerCase().startsWith('prj-') && 
+                    repo.name.toLowerCase() !== 'prj-portfolio'
+                );
+
+                container.innerHTML = ''; // Clear the loader
+
+                if (filteredRepos.length === 0) {
+                    container.innerHTML = '<p>No projects found with "prj-" prefix.</p>';
+                    return;
+                }
+
+                filteredRepos.forEach(repo => {
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    
+                    // Cleanup name for display: prj-snake-js -> Snake Js
+                    const displayName = repo.name.replace('prj-', '').replace(/-/g, ' ');
+                    
+                    // GitHub Pages URL
+                    const pagesUrl = `https://${username}.github.io/${repo.name}/`;
+                    
+                    card.innerHTML = `
+                        <h3>${displayName}</h3>
+                        <p>${repo.description || 'A web project built with HTML, CSS, and JavaScript.'}</p>
+                        <div class="links">
+                            <a href="${pagesUrl}" class="btn btn-primary" target="_blank">Live Demo</a>
+                            <a href="${repo.html_url}" class="btn btn-secondary" target="_blank">Source Code</a>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                container.innerHTML = `<p style="color: #ef4444;">Error loading projects. Please try again later.</p>`;
+                console.error(error);
+            }
+        }
+
+        loadProjects();
+    </script>
+</body>
+</html>
+

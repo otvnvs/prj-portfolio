@@ -254,31 +254,37 @@
   let allRepos   = [];
   let activeFilter = 'all';
 
-
 async function load() {
   const list = document.getElementById('projects');
   const subtitle = document.getElementById('subtitle');
   const filterContainer = document.getElementById('filters');
 
+  // Detection logic
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const targetUrl = isLocal 
+    ? './dummy/repos.json' 
+    : `https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`;
+	
+
   try {
-    const res = await fetch(`https://github.com/${USERNAME}/repos?per_page=100&sort=updated`);
-    if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
+    const res = await fetch(targetUrl);
+    if (!res.ok) throw new Error(`${isLocal ? 'Local File' : 'GitHub API'}: ${res.status}`);
     
     const data = await res.json();
+    
+    // Filter out prj-portfolio and ensure they start with your prefix
     allRepos = data.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
 
-    // 1. Clear the filter container first
+    // Reset filters and add "all"
     filterContainer.innerHTML = '';
-
-    // 2. Create the "all" button dynamically so it's treated the same way
     const allBtn = document.createElement('button');
-    allBtn.className = 'filter-btn active'; // Default active
+    allBtn.className = 'filter-btn active';
     allBtn.textContent = 'all';
     allBtn.dataset.filter = 'all';
     allBtn.onclick = () => setFilter('all');
     filterContainer.appendChild(allBtn);
 
-    // 3. Extract and add specific topics
+    // Extract unique topics for buttons
     const topics = new Set();
     allRepos.forEach(r => r.topics.forEach(t => topics.add(t)));
     
@@ -296,9 +302,10 @@ async function load() {
 
   } catch (err) {
     list.innerHTML = `<li class="state error">${err.message}</li>`;
-    subtitle.textContent = '// error fetching repos';
+    subtitle.textContent = isLocal ? '// local repos.json not found' : '// error fetching repos';
   }
 }
+
 
 function setFilter(topic) {
   activeFilter = topic;

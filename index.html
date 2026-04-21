@@ -1,377 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>otvnvs / portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #0d1117;
-      --ink: #cdd9e5;
-      --muted: #4d6478;
-      --accent: #58a6ff;
-      --border: #243447;
-      --card-bg: rgba(255, 255, 255, 0.02);
-    }
- 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
- 
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'Syne', sans-serif;
-      min-height: 100vh;
-      padding: 3rem 2rem;
-    }
- 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
- 
-    .wrap {
-      max-width: 1000px; /* Slightly wider for grid */
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
- 
-    header {
-      border-top: 3px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 1.5rem 0;
-      margin-bottom: 3rem;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-    }
- 
-    .site-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; }
-    .site-title span { color: var(--accent); }
- 
-    .gh-link {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .gh-link:hover { color: var(--accent); }
- 
-    h1 {
-      font-size: clamp(2.8rem, 8vw, 5rem);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      margin-bottom: 0.5rem;
-    }
-    h1 em { font-style: normal; color: var(--accent); }
- 
-    /* NEW: Controls Section */
-    .controls {
-      margin-bottom: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>otvnvs / portfolio</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link href="https://googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --ink: #cdd9e5;
+            --muted: #4d6478;
+            --accent: #58a6ff;
+            --border: #243447;
+            --card-bg: rgba(255, 255, 255, 0.02)
+        }
 
-    #search {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--ink);
-      padding: 0.8rem;
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.8rem;
-      outline: none;
-      width: 100%;
-      max-width: 300px;
-    }
-    #search:focus { border-color: var(--accent); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
 
-    #filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .filter-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 0.3rem 0.7rem;
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.65rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Syne, sans-serif;
+            min-height: 100vh;
+            padding: 3rem 2rem
+        }
 
-    .subtitle {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 1rem;
-      letter-spacing: 0.05em;
-    }
- 
-    /* UPDATED: Tiled Grid View */
-    #projects { 
-      list-style: none; 
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
- 
-    #projects li {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      animation: slideUp 0.4s ease both;
-      display: flex;
-    }
- 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
- 
-    #projects a {
-      display: flex;
-      flex-direction: column;
-      padding: 1.5rem;
-      text-decoration: none;
-      color: var(--ink);
-      width: 100%;
-      transition: border-color 0.2s;
-    }
-    #projects li:hover { border-color: var(--accent); }
-    #projects a:hover .proj-name { color: var(--accent); }
- 
-    .proj-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-      transition: color 0.15s;
-    }
- 
-    .proj-desc {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
-      flex-grow: 1;
-    }
- 
-    .proj-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
-    }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0
+        }
 
-    .proj-tags {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+        .wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1
+        }
 
-    .tag {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      opacity: 0.7;
-    }
- 
-    .proj-meta {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--muted);
-    }
- 
-    .state {
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--muted);
-      padding: 2rem 0;
-      grid-column: 1 / -1;
-    }
- 
-    footer {
-      margin-top: 4rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      font-family: 'Syne Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-    }
-  </style>
+        header {
+            border-top: 3px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem
+        }
+
+        .site-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -.02em
+        }
+
+        .site-title span {
+            color: var(--accent)
+        }
+
+        .gh-link {
+            font-family: 'Syne Mono', monospace;
+            font-size: .72rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .15s
+        }
+
+        .gh-link:hover {
+            color: var(--accent)
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -.04em;
+            margin-bottom: .5rem
+        }
+
+        h1 em {
+            font-style: normal;
+            color: var(--accent)
+        }
+
+        .controls {
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        #search {
+            background: 0 0;
+            border: 1px solid var(--border);
+            color: var(--ink);
+            padding: .8rem;
+            font-family: 'Syne Mono', monospace;
+            font-size: .8rem;
+            outline: 0;
+            width: 100%;
+            max-width: 300px
+        }
+
+        #search:focus {
+            border-color: var(--accent)
+        }
+
+        #filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        .filter-btn {
+            background: 0 0;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: .3rem .7rem;
+            font-family: 'Syne Mono', monospace;
+            font-size: .65rem;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent)
+        }
+
+        .subtitle {
+            font-family: 'Syne Mono', monospace;
+            font-size: .78rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            letter-spacing: .05em
+        }
+
+        #projects {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem
+        }
+
+        #projects li {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            animation: slideUp .4s ease both;
+            display: flex
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px) }
+            to { opacity: 1; transform: translateY(0) }
+        }
+
+        #projects a {
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--ink);
+            width: 100%;
+            transition: border-color .2s
+        }
+
+        #projects li:hover {
+            border-color: var(--accent)
+        }
+
+        #projects a:hover .proj-name {
+            color: var(--accent)
+        }
+
+        .proj-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            margin-bottom: .5rem;
+            transition: color .15s
+        }
+
+        .proj-desc {
+            font-family: 'Syne Mono', monospace;
+            font-size: .72rem;
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            flex-grow: 1
+        }
+
+        .proj-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto
+        }
+
+        .proj-tags {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap
+        }
+
+        .tag {
+            font-family: 'Syne Mono', monospace;
+            font-size: .6rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            opacity: .7
+        }
+
+        .proj-meta {
+            font-family: 'Syne Mono', monospace;
+            font-size: .68rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Repository link specific styling */
+        .repo-link {
+            font-family: 'Syne Mono', monospace;
+            font-size: .65rem;
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .repo-link:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .state {
+            font-family: 'Syne Mono', monospace;
+            font-size: .8rem;
+            color: var(--muted);
+            padding: 2rem 0;
+            grid-column: 1/-1
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: 'Syne Mono', monospace;
+            font-size: .68rem;
+            color: var(--muted);
+            display: flex;
+            justify-content: space-between
+        }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="site-title"><span>@</span>otvnvs</div>
-    <a class="gh-link" href="https://github.com/otvnvs" target="_blank" rel="noopener">github.com/otvnvs ↗</a>
-  </header>
-
-  <h1>Work &<br><em>Projects</em></h1>
-  
-  <div class="controls">
-    <p class="subtitle" id="subtitle">// initializing...</p>
-    <input type="text" id="search" placeholder="search projects / topics...">
-    <div id="filters">
-      <button class="filter-btn active" data-filter="all">all</button>
-      <!-- Categories will be injected here -->
-    </div>
-  </div>
-
-  <ul id="projects"><li class="state">Loading...</li></ul>
-
-  <footer>
-    <span id="count"></span>
-    <span>built with github api</span>
-  </footer>
-</div>
-
-<script>
-  const USERNAME = window.location.hostname.split('.')[0] || 'otvnvs';
-  const PREFIX   = 'prj-';
-  let allRepos   = [];
-  let activeFilter = 'all';
-
-async function load() {
-  const list = document.getElementById('projects');
-  const subtitle = document.getElementById('subtitle');
-  const filterContainer = document.getElementById('filters');
-
-  // Detection logic
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const targetUrl = isLocal 
-    ? './dummy/repos.json' 
-    : `https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`;
-	
-
-  try {
-    const res = await fetch(targetUrl);
-    if (!res.ok) throw new Error(`${isLocal ? 'Local File' : 'GitHub API'}: ${res.status}`);
-    
-    const data = await res.json();
-    
-    // Filter out prj-portfolio and ensure they start with your prefix
-    allRepos = data.filter(r => r.name.startsWith(PREFIX) && r.name !== 'prj-portfolio');
-
-    // Reset filters and add "all"
-    filterContainer.innerHTML = '';
-    const allBtn = document.createElement('button');
-    allBtn.className = 'filter-btn active';
-    allBtn.textContent = 'all';
-    allBtn.dataset.filter = 'all';
-    allBtn.onclick = () => setFilter('all');
-    filterContainer.appendChild(allBtn);
-
-    // Extract unique topics for buttons
-    const topics = new Set();
-    allRepos.forEach(r => r.topics.forEach(t => topics.add(t)));
-    
-    topics.forEach(topic => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.textContent = topic;
-      btn.dataset.filter = topic;
-      btn.onclick = () => setFilter(topic);
-      filterContainer.appendChild(btn);
-    });
-
-    render();
-    setupSearch();
-
-  } catch (err) {
-    list.innerHTML = `<li class="state error">${err.message}</li>`;
-    subtitle.textContent = isLocal ? '// local repos.json not found' : '// error fetching repos';
-  }
-}
-
-
-function setFilter(topic) {
-  activeFilter = topic;
-  
-  // This updates the 'active' class on all buttons, including the dynamic "all" one
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    if (btn.dataset.filter === topic) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-  
-  render(); // Re-renders the grid based on the new activeFilter
-}
-
-  function setupSearch() {
-    document.getElementById('search').addEventListener('input', () => render());
-  }
-
-  function render() {
-    const list = document.getElementById('projects');
-    const subtitle = document.getElementById('subtitle');
-    const query = document.getElementById('search').value.toLowerCase();
-
-    const filtered = allRepos.filter(repo => {
-      const matchesSearch = repo.name.toLowerCase().includes(query) || 
-                            (repo.description || '').toLowerCase().includes(query) ||
-                            repo.topics.some(t => t.includes(query));
-      
-      const matchesFilter = activeFilter === 'all' || repo.topics.includes(activeFilter);
-      
-      return matchesSearch && matchesFilter;
-    });
-
-    subtitle.textContent = `// ${filtered.length} project${filtered.length !== 1 ? 's' : ''} found`;
-    list.innerHTML = '';
-
-    if (!filtered.length) {
-      list.innerHTML = `<li class="state">No matching projects found.</li>`;
-      return;
-    }
-
-    filtered.forEach((repo, i) => {
-      const label   = repo.name.replace(PREFIX, '').replace(/-/g, ' ');
-      const pageUrl = repo.homepage || `https://${USERNAME}.github.io/${repo.name}/`;
-      
-      const li = document.createElement('li');
-      li.style.animationDelay = `${i * 50}ms`;
-      li.innerHTML = `
-        <a href="${pageUrl}" target="_blank" rel="noopener">
-          <span class="proj-name">${label}</span>
-          <span class="proj-desc">${repo.description || 'No description provided.'}</span>
-          <div class="proj-footer">
-            <div class="proj-tags">
-              ${repo.topics.map(t => `<span class="tag">#${t}</span>`).join('')}
+    <div class="wrap">
+        <header>
+            <div class="site-title"><span>@</span>otvnvs</div>
+            <a class="gh-link" href="https://github.com" target="_blank" rel="noopener">://github.com ↗</a>
+        </header>
+        <h1>Work &<br><em>Projects</em></h1>
+        <div class="controls">
+            <p class="subtitle" id="subtitle">// initializing...</p>
+            <input type="text" id="search" placeholder="search projects / topics...">
+            <div id="filters">
+                <button class="filter-btn active" data-filter="all">all</button>
             </div>
-            <span class="proj-meta">${repo.stargazers_count ? '★ ' + repo.stargazers_count : ''}</span>
-          </div>
-        </a>
-      `;
-      list.appendChild(li);
-    });
-  }
+        </div>
+        <ul id="projects">
+            <li class="state">Loading...</li>
+        </ul>
+        <footer>
+            <span id="count"></span>
+            <span>built with github api</span>
+        </footer>
+    </div>
 
-  load();
-</script>
+    <script>
+        const USERNAME = window.location.hostname.split(".")[0] || "otvnvs", PREFIX = "prj-";
+        let allRepos = [], activeFilter = "all";
+
+        async function load() {
+            const e = document.getElementById("projects"), t = document.getElementById("subtitle"), n = document.getElementById("filters"), o = "localhost" === window.location.hostname || "127.0.0.1" === window.location.hostname, a = o ? "./dummy/repos.json" : `https://github.com{USERNAME}/repos?per_page=100&sort=updated`;
+            try {
+                const s = await fetch(a);
+                if (!s.ok) throw new Error(`${o ? "Local File" : "GitHub API"}: ${s.status}`);
+                const l = await s.json();
+                allRepos = l.filter(e => e.name.startsWith(PREFIX) && "prj-portfolio" !== e.name), n.innerHTML = "";
+                const r = document.createElement("button");
+                r.className = "filter-btn active", r.textContent = "all", r.dataset.filter = "all", r.onclick = (() => setFilter("all")), n.appendChild(r);
+                const c = new Set;
+                allRepos.forEach(e => e.topics.forEach(e => c.add(e))), c.forEach(e => {
+                    const t = document.createElement("button");
+                    t.className = "filter-btn", t.textContent = e, t.dataset.filter = e, t.onclick = (() => setFilter(e)), n.appendChild(t)
+                }), render(), setupSearch()
+            } catch (n) {
+                e.innerHTML = `<li class="state error">${n.message}</li>`, t.textContent = o ? "// local repos.json not found" : "// error fetching repos"
+            }
+        }
+
+        function setFilter(e) {
+            activeFilter = e, document.querySelectorAll(".filter-btn").forEach(t => {
+                t.dataset.filter === e ? t.classList.add("active") : t.classList.remove("active")
+            }), render()
+        }
+
+        function setupSearch() {
+            document.getElementById("search").addEventListener("input", () => render())
+        }
+
+        function render() {
+            const e = document.getElementById("projects"), t = document.getElementById("subtitle"), n = document.getElementById("search").value.toLowerCase(), o = allRepos.filter(e => {
+                const t = e.name.toLowerCase().includes(n) || (e.description || "").toLowerCase().includes(n) || e.topics.some(e => e.includes(n)), o = "all" === activeFilter || e.topics.includes(activeFilter);
+                return t && o
+            });
+            t.textContent = `// ${o.length} project${1 !== o.length ? "s" : ""} found`, e.innerHTML = "", o.length ? o.forEach((t, n) => {
+                const o = t.name.replace(PREFIX, "").replace(/-/g, " "), a = t.homepage || `https://${USERNAME}.github.io/${t.name}/`, s = document.createElement("li");
+                s.style.animationDelay = `${50 * n}ms`, 
+                s.innerHTML = `
+                    <a href="${a}" target="_blank" rel="noopener">
+                        <span class="proj-name">${o}</span>
+                        <span class="proj-desc">${t.description || "No description provided."}</span>
+                        <div class="proj-footer">
+                            <div class="proj-tags">
+                                ${t.topics.map(e => `<span class="tag">#${e}</span>`).join("")}
+                            </div>
+                            <div class="proj-meta">
+                                ${t.stargazers_count ? "★ " + t.stargazers_count : ""}
+                                <object>
+                                    <a href="${t.html_url}" target="_blank" class="repo-link">source ↗</a>
+                                </object>
+                            </div>
+                        </div>
+                    </a>
+                `, e.appendChild(s)
+            }) : e.innerHTML = '<li class="state">No matching projects found.</li>'
+        }
+        load();
+    </script>
 </body>
 </html>
+

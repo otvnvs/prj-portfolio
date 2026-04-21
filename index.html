@@ -292,7 +292,7 @@
         let allRepos = [], activeFilter = "all";
 
         async function load() {
-            const e = document.getElementById("projects"), t = document.getElementById("subtitle"), n = document.getElementById("filters"), o = "localhost" === window.location.hostname || "127.0.0.1" === window.location.hostname, a = o ? "./dummy/repos.json" : `https://github.com{USERNAME}/repos?per_page=100&sort=updated`;
+            const e = document.getElementById("projects"), t = document.getElementById("subtitle"), n = document.getElementById("filters"), o = "localhost" === window.location.hostname || "127.0.0.1" === window.location.hostname, a = o ? "./dummy/repos.json" : `https://github.com/${USERNAME}/repos?per_page=100&sort=updated`;
             try {
                 const s = await fetch(a);
                 if (!s.ok) throw new Error(`${o ? "Local File" : "GitHub API"}: ${s.status}`);

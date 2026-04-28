@@ -248,7 +248,7 @@ h1 em {
   font-family: 'Syne Mono', monospace;
   font-size: 0.8rem;
   color: var(--muted);
-  padding: 2rem 0;
+  padding: 20px 20px;
   grid-column: 1/-1;
 }
 
